@@ -46,11 +46,26 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Data\GameData.cs" />
-    <Compile Include="Data\Move.cs" />
+    <Compile Include="Data\PlayerTurnData.cs" />
+    <Compile Include="Data\StaticGameData.cs" />
+    <Compile Include="Data\GameProgressData.cs" />
+    <Compile Include="FrontEnd\UserInterface.cs" />
+    <Compile Include="Interfaces\IUserInterface.cs" />
+    <Compile Include="Models\MoveModel.cs" />
+    <Compile Include="FrontEnd\ScreenDrawer.cs" />
     <Compile Include="Game.cs" />
-    <Compile Include="Network\MessageService.cs" />
-    <Compile Include="Data\Packet.cs" />
+    <Compile Include="Interfaces\IMessageHandler.cs" />
+    <Compile Include="MessageHandlers\BoardStateHandler.cs" />
+    <Compile Include="MessageHandlers\ExitHandler.cs" />
+    <Compile Include="MessageHandlers\GameDrawHandler.cs" />
+    <Compile Include="MessageHandlers\GameWonHandler.cs" />
+    <Compile Include="MessageHandlers\MessageHandler.cs" />
+    <Compile Include="Interfaces\IMessageService.cs" />
+    <Compile Include="MessageHandlers\MoveConfirmHandler.cs" />
+    <Compile Include="MessageHandlers\MoveDenyHandler.cs" />
+    <Compile Include="MessageHandlers\MoveRequestHandler.cs" />
+    <Compile Include="Services\MessageService.cs" />
+    <Compile Include="Models\Packet.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

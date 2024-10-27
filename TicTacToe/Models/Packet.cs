@@ -1,7 +1,7 @@
 ﻿using System;
 using Newtonsoft.Json;
 
-namespace TicTacToe.Data
+namespace TicTacToe.Models
 {
     public class Packet
     {

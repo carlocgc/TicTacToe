@@ -3,7 +3,7 @@
 namespace TicTacToe.Data
 {
     /// <summary> Global static game data </summary>
-    public static class GameData
+    public static class StaticGameData
     {
         /// <summary> Port the game communicates on </summary>
         public const Int32 GAME_PORT = 6600;
@@ -24,6 +24,7 @@ namespace TicTacToe.Data
             MOVE_DENY,
             BOARD_STATE,
             GAME_WON,
+            GAME_DRAW,
             EXIT,
         }
     }

@@ -1,16 +1,16 @@
 ﻿using System;
 using System.IO;
 using System.Net;
-using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
-using TicTacToe.Data;
+using TicTacToe.Interfaces;
+using TicTacToe.Models;
 
-namespace TicTacToe.Network
+namespace TicTacToe.Services
 {
     /// <summary> Manages the connection between two players, can send and receive message packets </summary>
-    public class MessageService
+    public class MessageService : IMessageService
     {
         /// <summary> The local ip address </summary>
         private readonly IPAddress _LocalAddress;
@@ -24,10 +24,11 @@ namespace TicTacToe.Network
         private TcpClient _Client;
         /// <summary> The clients message stream </summary>
         private NetworkStream _MsgStream;
+
         /// <summary> Whether the message service is connected to the client </summary>
         public Boolean Connected { get; private set; }
 
-        public Boolean Master { get; private set; }
+        public Boolean IsHost { get; private set; }
 
         public MessageService()
         {
@@ -75,9 +76,17 @@ namespace TicTacToe.Network
 
             using (WebResponse response = req.GetResponse())
             {
-                using (StreamReader reader = new StreamReader(response.GetResponseStream()))
+                try
                 {
-                    address = reader.ReadToEnd();
+                    using (StreamReader reader = new StreamReader(response.GetResponseStream() ?? throw new InvalidOperationException()))
+                    {
+                        address = reader.ReadToEnd();
+                    }
+                }
+                catch (InvalidOperationException e)
+                {
+                    Console.WriteLine($"Could not get public ip address: {e.Message}");
+                    return null;
                 }
             }
 
@@ -108,7 +117,7 @@ namespace TicTacToe.Network
                 Console.WriteLine("Welcome to TicTacToe");
                 Console.WriteLine($"----------------------");
                 Console.WriteLine($"Local address: {_LocalAddress}:{_LocalPort}");
-                Console.WriteLine($"Public address: {_PublicAddress}:{_LocalPort}");
+                //Console.WriteLine($"Public address: {_PublicAddress}:{_LocalPort}");
                 Console.WriteLine($"----------------------");
                 Console.WriteLine($"1. Host");
                 Console.WriteLine($"2. Client");
@@ -119,21 +128,29 @@ namespace TicTacToe.Network
 
                 if (resp == null) continue;
 
-                if (resp.ToLower() == "host" || resp.ToLower() == "1")
+                switch (resp.ToLower())
                 {
-                    Master = true;
-                    valid = true;
-                }
-                else if (resp.ToLower() == "client" || resp.ToLower() == "2")
-                {
-                    Master = false;
-                    valid = true;
-                }
-                else
-                {
-                    Console.WriteLine($"Invalid option...");
-                    Console.WriteLine($"Press enter to try again.");
-                    Console.ReadKey();
+                    case "host":
+                    case "1":
+                        {
+                            IsHost = true;
+                            valid = true;
+                            break;
+                        }
+                    case "client":
+                    case "2":
+                        {
+                            IsHost = false;
+                            valid = true;
+                            break;
+                        }
+                    default:
+                        {
+                            Console.WriteLine($"Invalid option...");
+                            Console.WriteLine($"Press enter to try again.");
+                            Console.ReadKey();
+                            break;
+                        }
                 }
             }
         }
@@ -182,7 +199,7 @@ namespace TicTacToe.Network
                 catch (SocketException e)
                 {
                     Console.Clear();
-                    Console.WriteLine($"Host {hostAddress}:{port} not found...");
+                    Console.WriteLine($"Host {hostAddress}:{port} not found: {e.Message}");
                 }
                 Thread.Sleep(10);
             }

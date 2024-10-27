@@ -1,14 +1,14 @@
 ﻿using System;
 
-namespace TicTacToe.Data
+namespace TicTacToe.Models
 {
-    public struct Move
+    public class MoveModel
     {
         public Int32 X { get; }
 
         public Int32 Y { get; }
 
-        public Move(Int32 x, Int32 y)
+        public MoveModel(Int32 x, Int32 y)
         {
             X = x;
             Y = y;
@@ -19,7 +19,7 @@ namespace TicTacToe.Data
             return $"{X},{Y}";
         }
 
-        public static Move FromString(String moveString)
+        public static MoveModel FromString(String moveString)
         {
             String[] parts = moveString.Split(',');
 
@@ -34,7 +34,7 @@ namespace TicTacToe.Data
                 throw new ArgumentException(error);
             }
 
-            return new Move(x, y);
+            return new MoveModel(x, y);
         }
     }
 }
